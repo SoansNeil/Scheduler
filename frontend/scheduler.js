@@ -1,7 +1,7 @@
 const processForm = document.querySelector("#process-form");
-const processNameInput = processForm.elements["process-name"];
 const burstTimeInput = processForm.elements["burst-time"];
 const arrivalTimeInput = processForm.elements["arrival-time"];
+const nextProcessName = document.querySelector("#next-process-name");
 const processList = document.querySelector("#process-list");
 const resultsList = document.querySelector("#results-list");
 const averageTurnaroundOutput = document.querySelector("#average-turnaround");
@@ -17,20 +17,6 @@ const ganttColumns = ganttTable.querySelector("colgroup");
 const ganttHeader = ganttTable.tHead.rows[0];
 const ganttRow = ganttTable.tBodies[0].rows[0];
 const processes = [];
-
-function updateProcessNameValidity() {
-	const processName = processNameInput.value.trim();
-	const nameExists = processes.some(
-		(process) => process.name.toLowerCase() === processName.toLowerCase()
-	);
-	const errorMessage = processName === ""
-		? "Enter a process name."
-		: nameExists
-			? "A process with this name already exists."
-			: "";
-
-	processNameInput.setCustomValidity(errorMessage);
-}
 
 function addProcessRow(process) {
 	const row = document.createElement("tr");
@@ -382,7 +368,6 @@ function updateScheduleViews() {
 	renderResults(schedule.results);
 }
 
-processNameInput.addEventListener("input", updateProcessNameValidity);
 for (const policyInput of policyInputs) {
 	policyInput.addEventListener("change", updateScheduleViews);
 }
@@ -390,14 +375,13 @@ cycleTimeInput.addEventListener("input", updateScheduleViews);
 
 processForm.addEventListener("submit", (event) => {
 	event.preventDefault();
-	updateProcessNameValidity();
 
 	if (!processForm.reportValidity()) {
 		return;
 	}
 
 	const process = {
-		name: processNameInput.value.trim(),
+		name: `P${processes.length + 1}`,
 		burstTime: burstTimeInput.valueAsNumber,
 		arrivalTime: arrivalTimeInput.valueAsNumber,
 		order: processes.length,
@@ -411,7 +395,8 @@ processForm.addEventListener("submit", (event) => {
 	addProcessRow(process);
 	updateScheduleViews();
 	processForm.reset();
-	processNameInput.focus();
+	nextProcessName.textContent = `P${processes.length + 1}`;
+	burstTimeInput.focus();
 });
 
 clearScheduleButton.addEventListener("click", () => {
@@ -427,7 +412,7 @@ clearScheduleButton.addEventListener("click", () => {
 	processList.append(emptyRow);
 
 	processForm.reset();
-	processNameInput.setCustomValidity("");
+	nextProcessName.textContent = "P1";
 	updateScheduleViews();
 });
 

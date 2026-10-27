@@ -163,6 +163,23 @@ h2 {
 	font-weight: 600;
 }
 
+.process-field-label {
+	color: var(--muted);
+	font-size: 0.875rem;
+	font-weight: 600;
+}
+
+.process-field output {
+	display: flex;
+	min-height: 2.65rem;
+	align-items: center;
+	padding: 0.65rem 0.75rem;
+	border: 1px solid var(--line);
+	border-radius: 0.5rem;
+	background: rgb(255 255 255 / 65%);
+	font-variant-numeric: tabular-nums;
+}
+
 .process-field input {
 	width: 100%;
 	min-width: 0;
