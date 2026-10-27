@@ -102,15 +102,15 @@ section::before {
 	transition: height 180ms ease;
 }
 
-main > section:nth-of-type(3) {
+.full-width-section {
+	grid-column: 1 / -1;
+}
+
+main > section:nth-of-type(2) {
 	--section-accent: var(--mint);
 }
 
-main > section:nth-of-type(4) {
-	--section-accent: var(--coral);
-}
-
-main > section:nth-of-type(5) {
+main > section:nth-of-type(3) {
 	--section-accent: var(--gold);
 }
 
@@ -174,16 +174,116 @@ h2 {
 	font: inherit;
 }
 
-.process-fields button {
+.process-actions {
+	display: flex;
+	flex-wrap: wrap;
+	gap: 0.5rem;
+}
+
+.process-actions button {
 	min-height: 2.65rem;
 	padding: 0.6rem 1rem;
 	border: 0;
 	border-radius: 0.5rem;
-	color: white;
-	background: var(--blue);
 	font: inherit;
 	font-weight: 600;
 	cursor: pointer;
+}
+
+.process-actions button[type="submit"] {
+	color: white;
+	background: var(--blue);
+}
+
+.process-actions .secondary-button {
+	border: 1px solid var(--line);
+	color: var(--ink);
+	background: white;
+}
+
+.process-list-scroll {
+	overflow-x: auto;
+	border: 1px solid var(--line);
+	border-radius: 0.75rem;
+	background: rgb(255 255 255 / 75%);
+}
+
+.process-list {
+	width: 100%;
+	border-collapse: collapse;
+	text-align: left;
+}
+
+.process-list th,
+.process-list td {
+	padding: 0.75rem 1rem;
+	border-bottom: 1px solid var(--line);
+}
+
+.process-list th {
+	color: var(--muted);
+	background: #f1f5fb;
+	font-size: 0.875rem;
+	font-weight: 600;
+}
+
+.process-list tbody tr:last-child td {
+	border-bottom: 0;
+}
+
+.empty-processes td {
+	color: var(--muted);
+	text-align: center;
+}
+
+.results-table-scroll {
+	overflow-x: auto;
+	border: 1px solid var(--line);
+	border-radius: 0.75rem;
+	background: rgb(255 255 255 / 75%);
+}
+
+.results-table {
+	width: 100%;
+	border-collapse: collapse;
+	text-align: left;
+}
+
+.results-table th,
+.results-table td {
+	padding: 0.7rem 0.85rem;
+	border-bottom: 1px solid var(--line);
+	font-variant-numeric: tabular-nums;
+	white-space: nowrap;
+}
+
+.results-table th {
+	color: var(--muted);
+	background: #f1f5fb;
+	font-size: 0.8rem;
+	font-weight: 600;
+}
+
+.results-table tbody tr:last-child td {
+	border-bottom: 0;
+}
+
+.results-averages {
+	display: flex;
+	flex-wrap: wrap;
+	gap: 0.5rem 1.5rem;
+	padding-top: 0.75rem;
+}
+
+.results-averages p {
+	margin-bottom: 0;
+	font-size: 0.9rem;
+	font-weight: 600;
+}
+
+.results-averages output {
+	color: var(--blue);
+	font-variant-numeric: tabular-nums;
 }
 
 .policy-options {
@@ -216,6 +316,43 @@ h2 {
 	accent-color: var(--blue);
 }
 
+.cycle-time-field {
+	display: flex;
+	align-items: center;
+	gap: 0.75rem;
+	margin: -0.25rem 0 1rem;
+}
+
+.cycle-time-field[hidden] {
+	display: none;
+}
+
+.cycle-time-field label {
+	font-size: 0.9rem;
+	font-weight: 600;
+}
+
+.cycle-time-field input {
+	width: 7rem;
+	padding: 0.5rem 0.65rem;
+	border: 1px solid var(--line);
+	border-radius: 0.5rem;
+	color: var(--ink);
+	background: white;
+	font: inherit;
+	font-variant-numeric: tabular-nums;
+}
+
+.schedule-status {
+	margin-bottom: 0.75rem;
+	color: var(--muted);
+	font-size: 0.875rem;
+}
+
+.schedule-status:empty {
+	display: none;
+}
+
 .gantt-scroll {
 	overflow-x: auto;
 	border: 1px solid var(--line);
@@ -232,7 +369,6 @@ h2 {
 
 .gantt-chart th,
 .gantt-chart td {
-	width: 12%;
 	height: 3rem;
 	padding: 0.65rem 0.5rem;
 	border-right: 1px solid var(--line);
@@ -240,8 +376,11 @@ h2 {
 	font-size: 0.875rem;
 }
 
-.gantt-chart th:first-child {
+.gantt-chart .cpu-label-column {
 	width: 16%;
+}
+
+.gantt-chart th:first-child {
 	text-align: left;
 }
 
@@ -262,6 +401,43 @@ h2 {
 
 .gantt-chart tbody td {
 	background: repeating-linear-gradient(135deg, #fff 0 8px, #f7f9fc 8px 16px);
+}
+
+.gantt-chart tbody td.process-block {
+	border: 1px solid white;
+	border-radius: 0.4rem;
+	color: var(--ink);
+	font-weight: 700;
+	text-align: center;
+	white-space: nowrap;
+}
+
+.gantt-chart tbody td.process-color-0 {
+	background: #dce7ff;
+}
+
+.gantt-chart tbody td.process-color-1 {
+	background: #d9f3ed;
+}
+
+.gantt-chart tbody td.process-color-2 {
+	background: #ffe4dc;
+}
+
+.gantt-chart tbody td.process-color-3 {
+	background: #fff0c7;
+}
+
+.gantt-chart tbody td.idle-block {
+	color: var(--muted);
+	background: repeating-linear-gradient(135deg, #fff 0 8px, #f7f9fc 8px 16px);
+	font-style: italic;
+	text-align: center;
+}
+
+.gantt-chart tbody td.empty-chart {
+	color: var(--muted);
+	text-align: center;
 }
 
 .visually-hidden {
