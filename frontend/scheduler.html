@@ -14,56 +14,107 @@
 	</header>
 
 	<main>
+		<section class="process-entry" aria-labelledby="process-entry-heading">
+			<h2 id="process-entry-heading">Add a process</h2>
+			<form id="process-form" class="process-fields">
+				<div class="process-field">
+					<span class="process-field-label">Next process</span>
+					<output id="next-process-name">P1</output>
+				</div>
+				<div class="process-field">
+					<label for="burst-time">Burst time</label>
+					<input id="burst-time" name="burst-time" type="number" min="1" step="1" placeholder="e.g. 5" required>
+				</div>
+				<div class="process-field">
+					<label for="arrival-time">Arrival time</label>
+					<input id="arrival-time" name="arrival-time" type="number" min="0" step="1" placeholder="e.g. 0" required>
+				</div>
+				<div class="process-actions">
+					<button type="submit">Add process</button>
+					<button id="clear-schedule" class="secondary-button" type="button">Clear schedule</button>
+				</div>
+			</form>
+		</section>
+
 		<figure class="gantt-chart" aria-labelledby="gantt-heading">
 			<h2 id="gantt-heading">Gantt chart</h2>
+			<fieldset class="policy-options">
+				<legend>Scheduling policies</legend>
+				<label><input type="radio" name="policy" value="fcfs" checked> First Come, First Served (FCFS)</label>
+				<label><input type="radio" name="policy" value="sjf"> Shortest Job First (SJF)</label>
+				<label><input type="radio" name="policy" value="srtf"> Shortest Remaining Time First (SRTF)</label>
+				<label><input type="radio" name="policy" value="round-robin"> Round Robin</label>
+			</fieldset>
+			<div id="cycle-time-field" class="cycle-time-field" hidden>
+				<label for="cycle-time">Cycle time (time quantum)</label>
+				<input id="cycle-time" name="cycle-time" type="number" min="1" step="1" placeholder="e.g. 2">
+			</div>
+			<p id="schedule-status" class="schedule-status" aria-live="polite"></p>
 			<div class="gantt-scroll">
 				<table>
-					<caption class="visually-hidden">Empty CPU timeline from time 0 through 6</caption>
+					<caption class="visually-hidden">Add processes to generate an FCFS schedule.</caption>
+					<colgroup>
+						<col class="cpu-label-column">
+					</colgroup>
 					<thead>
 						<tr>
 							<th scope="col">CPU</th>
-							<th scope="col">0</th>
-							<th scope="col">1</th>
-							<th scope="col">2</th>
-							<th scope="col">3</th>
-							<th scope="col">4</th>
-							<th scope="col">5</th>
-							<th scope="col">6</th>
 						</tr>
 					</thead>
 					<tbody>
 						<tr>
-							<th scope="row">Ready</th>
-							<td></td>
-							<td></td>
-							<td></td>
-							<td></td>
-							<td></td>
-							<td></td>
+							<th scope="row">CPU</th>
+							<td class="empty-chart" colspan="1">Add processes to see the schedule.</td>
 						</tr>
 					</tbody>
 				</table>
 			</div>
 		</figure>
 
-		<section aria-labelledby="processes-heading">
+		<section class="full-width-section" aria-labelledby="processes-heading">
 			<h2 id="processes-heading">Processes</h2>
-			<!-- TODO: Add controls for entering or editing processes. -->
+			<div class="process-list-scroll">
+				<table class="process-list">
+					<thead>
+						<tr>
+							<th scope="col">Process</th>
+							<th scope="col">Burst time</th>
+							<th scope="col">Arrival time</th>
+						</tr>
+					</thead>
+					<tbody id="process-list">
+						<tr class="empty-processes">
+							<td colspan="3">No processes added yet.</td>
+						</tr>
+					</tbody>
+				</table>
+			</div>
 		</section>
 
-		<section aria-labelledby="algorithm-heading">
-			<h2 id="algorithm-heading">Scheduling algorithm</h2>
-			<!-- TODO: Add algorithm selection and any related settings. -->
-		</section>
-
-		<section aria-labelledby="schedule-heading">
-			<h2 id="schedule-heading">Schedule</h2>
-			<!-- TODO: Render the scheduling timeline here. -->
-		</section>
-
-		<section aria-labelledby="results-heading">
+		<section class="full-width-section" aria-labelledby="results-heading">
 			<h2 id="results-heading">Results</h2>
-			<!-- TODO: Show waiting time, turnaround time, and other results. -->
+			<div class="results-table-scroll">
+				<table class="results-table">
+					<thead>
+						<tr>
+							<th scope="col">Process</th>
+							<th scope="col">Completion time</th>
+							<th scope="col">Turnaround time</th>
+							<th scope="col">Waiting time</th>
+							<th scope="col">Response time</th>
+						</tr>
+					</thead>
+					<tbody id="results-list">
+						<tr class="empty-processes">
+							<td colspan="5">Add processes to calculate results.</td>
+						</tr>
+					</tbody>
+				</table>
+			</div>
+			<div class="results-averages" aria-live="polite">
+				<p>Average turnaround time: <output id="average-turnaround">—</output></p>
+				<p>Average waiting time: <output id="average-waiting">—</output></p>
+			</div>
 		</section>
 	</main>
 
@@ -71,6 +122,6 @@
 		<!-- TODO: Add any footer content. -->
 	</footer>
 
-	<!-- TODO: Add your JavaScript file before the closing body tag. -->
+	<script src="scheduler.js" defer></script>
 </body>
 </html>
