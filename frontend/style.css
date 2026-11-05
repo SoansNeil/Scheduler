@@ -756,7 +756,7 @@ h2 {
 }
 
 .gantt-chart tbody td.process-block {
-	background: color-mix(in srgb, var(--process-color) 20%, white);
+	background: var(--process-color);
 }
 
 .gantt-chart tbody td.idle-block {
