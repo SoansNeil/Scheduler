@@ -23,6 +23,7 @@ const ganttHeader = ganttTable.tHead.rows[0];
 const ganttRow = ganttTable.tBodies[0].rows[0];
 const processes = [];
 let latestResults = [];
+let nextProcessNumber = 1;
 const schedulingPolicies = [
 	{ value: "fcfs", label: "FCFS" },
 	{ value: "sjf", label: "SJF" },
@@ -39,7 +40,45 @@ function addProcessRow(process) {
 		row.append(cell);
 	}
 
+	const actionsCell = document.createElement("td");
+	const deleteButton = document.createElement("button");
+	deleteButton.type = "button";
+	deleteButton.className = "delete-process-button";
+	deleteButton.textContent = "Delete";
+	deleteButton.setAttribute("aria-label", `Delete ${process.name}`);
+	deleteButton.addEventListener("click", () => deleteProcess(process));
+	actionsCell.append(deleteButton);
+	row.append(actionsCell);
 	processList.append(row);
+}
+
+function showEmptyProcessList() {
+	const emptyRow = document.createElement("tr");
+	emptyRow.className = "empty-processes";
+	const emptyCell = document.createElement("td");
+	emptyCell.colSpan = 4;
+	emptyCell.textContent = "No processes added yet.";
+	emptyRow.append(emptyCell);
+	processList.replaceChildren(emptyRow);
+}
+
+function deleteProcess(process) {
+	const processIndex = processes.findIndex((candidate) => candidate.order === process.order);
+	if (processIndex === -1) {
+		return;
+	}
+
+	const deletedRow = processList.rows[processIndex];
+	processes.splice(processIndex, 1);
+	deletedRow.remove();
+	if (processes.length === 0) {
+		showEmptyProcessList();
+	}
+
+	updateScheduleViews();
+	const nextRow = processList.rows[Math.min(processIndex, processes.length - 1)];
+	const nextDeleteButton = nextRow?.querySelector(".delete-process-button");
+	(nextDeleteButton ?? document.querySelector("#burst-time")).focus();
 }
 
 function appendSegment(segments, process, start, end) {
@@ -499,10 +538,10 @@ processForm.addEventListener("submit", (event) => {
 	}
 
 	const process = {
-		name: `P${processes.length + 1}`,
+		name: `P${nextProcessNumber}`,
 		burstTime: burstTimeInput.valueAsNumber,
 		arrivalTime: arrivalTimeInput.valueAsNumber,
-		order: processes.length,
+		order: nextProcessNumber - 1,
 	};
 
 	if (processes.length === 0) {
@@ -510,24 +549,18 @@ processForm.addEventListener("submit", (event) => {
 	}
 
 	processes.push(process);
+	nextProcessNumber += 1;
 	addProcessRow(process);
 	updateScheduleViews();
 	processForm.reset();
-	nextProcessName.textContent = `P${processes.length + 1}`;
+	nextProcessName.textContent = `P${nextProcessNumber}`;
 	burstTimeInput.focus();
 });
 
 clearScheduleButton.addEventListener("click", () => {
 	processes.length = 0;
-	processList.replaceChildren();
-
-	const emptyRow = document.createElement("tr");
-	emptyRow.className = "empty-processes";
-	const emptyCell = document.createElement("td");
-	emptyCell.colSpan = 3;
-	emptyCell.textContent = "No processes added yet.";
-	emptyRow.append(emptyCell);
-	processList.append(emptyRow);
+	nextProcessNumber = 1;
+	showEmptyProcessList();
 
 	processForm.reset();
 	nextProcessName.textContent = "P1";
