@@ -9,6 +9,7 @@ const averageWaitingOutput = document.querySelector("#average-waiting");
 const resultsChartMetric = document.querySelector("#results-chart-metric");
 const resultsChartList = document.querySelector("#results-chart-list");
 const resultsChartScale = document.querySelector("#results-chart-scale");
+const resultsPieGrid = document.querySelector("#results-pie-grid");
 const policyComparisonList = document.querySelector("#policy-comparison-list");
 const ganttSegmentDetails = document.querySelector("#gantt-segment-details");
 const clearScheduleButton = document.querySelector("#clear-schedule");
@@ -30,6 +31,30 @@ const schedulingPolicies = [
 	{ value: "srtf", label: "SRTF" },
 	{ value: "round-robin", label: "Round Robin" },
 ];
+const resultsPieMetrics = [
+	{ value: "turnaroundTime", label: "Turnaround time" },
+	{ value: "waitingTime", label: "Waiting time" },
+	{ value: "responseTime", label: "Response time" },
+];
+const processColors = [
+	"#2563c9",
+	"#4f806f",
+	"#bd7657",
+	"#c49336",
+	"#7458a6",
+	"#3989a4",
+	"#bc5683",
+	"#76933d",
+];
+
+function getProcessColor(order) {
+	if (order < processColors.length) {
+		return processColors[order];
+	}
+
+	const hue = ((order - processColors.length) * 137.508 + 15) % 360;
+	return `hsl(${hue.toFixed(3)} 62% 40%)`;
+}
 
 function addProcessRow(process) {
 	const row = document.createElement("tr");
@@ -93,7 +118,6 @@ function appendSegment(segments, process, start, end) {
 		start,
 		end,
 		order: process.order,
-		colorIndex: process.order % 4,
 	});
 }
 
@@ -336,7 +360,7 @@ function renderGanttChart(schedule) {
 		const block = document.createElement("td");
 		block.classList.add(segment.idle ? "idle-block" : "process-block");
 		if (!segment.idle) {
-			block.classList.add(`process-color-${segment.colorIndex}`);
+			block.style.setProperty("--process-color", getProcessColor(segment.order));
 		}
 		const segmentButton = document.createElement("button");
 		segmentButton.type = "button";
@@ -373,6 +397,7 @@ function renderResults(results) {
 		averageTurnaroundOutput.textContent = "—";
 		averageWaitingOutput.textContent = "—";
 		renderResultsChart(results);
+		renderResultsPieCharts(results);
 		return;
 	}
 
@@ -400,6 +425,7 @@ function renderResults(results) {
 	averageTurnaroundOutput.textContent = (totalTurnaroundTime / results.length).toFixed(2);
 	averageWaitingOutput.textContent = (totalWaitingTime / results.length).toFixed(2);
 	renderResultsChart(results);
+	renderResultsPieCharts(results);
 }
 
 function renderResultsChart(results) {
@@ -432,6 +458,7 @@ function renderResultsChart(results) {
 		const bar = document.createElement("span");
 		bar.className = "results-chart-bar";
 		bar.style.width = `${maximum === 0 ? 0 : (result[metric] / maximum) * 100}%`;
+		bar.style.backgroundColor = getProcessColor(result.order);
 		track.append(bar);
 
 		const value = document.createElement("span");
@@ -444,6 +471,132 @@ function renderResultsChart(results) {
 	}
 
 	resultsChartScale.lastElementChild.textContent = `${maximum} time units`;
+}
+
+function createPieSlicePath(startAngle, endAngle, isFullCircle) {
+	const radius = 92;
+	const center = 100;
+	if (isFullCircle) {
+		return [
+			`M ${center} ${center - radius}`,
+			`A ${radius} ${radius} 0 1 1 ${center} ${center + radius}`,
+			`A ${radius} ${radius} 0 1 1 ${center} ${center - radius}`,
+			"Z",
+		].join(" ");
+	}
+
+	const startRadians = (startAngle * Math.PI) / 180;
+	const endRadians = (endAngle * Math.PI) / 180;
+	const startX = center + radius * Math.cos(startRadians);
+	const startY = center + radius * Math.sin(startRadians);
+	const endX = center + radius * Math.cos(endRadians);
+	const endY = center + radius * Math.sin(endRadians);
+	const largeArc = endAngle - startAngle > 180 ? 1 : 0;
+	return `M ${center} ${center} L ${startX} ${startY} A ${radius} ${radius} 0 ${largeArc} 1 ${endX} ${endY} Z`;
+}
+
+function renderResultsPieCharts(results) {
+	resultsPieGrid.replaceChildren();
+
+	for (const metric of resultsPieMetrics) {
+		const figure = document.createElement("figure");
+		figure.className = "results-pie";
+
+		const caption = document.createElement("figcaption");
+		caption.textContent = metric.label;
+
+		const total = results.reduce((sum, result) => sum + result[metric.value], 0);
+		const positiveSliceCount = results.filter((result) => result[metric.value] > 0).length;
+		const chart = document.createElementNS("http://www.w3.org/2000/svg", "svg");
+		chart.classList.add("results-pie-chart");
+		chart.setAttribute("viewBox", "0 0 200 200");
+		chart.setAttribute("role", "group");
+		chart.setAttribute("aria-label", `${metric.label} by process`);
+
+		if (total === 0) {
+			const emptyCircle = document.createElementNS("http://www.w3.org/2000/svg", "circle");
+			emptyCircle.classList.add("results-pie-empty");
+			emptyCircle.setAttribute("cx", "100");
+			emptyCircle.setAttribute("cy", "100");
+			emptyCircle.setAttribute("r", "92");
+			chart.append(emptyCircle);
+
+			const emptyLabel = document.createElementNS("http://www.w3.org/2000/svg", "text");
+			emptyLabel.classList.add("results-pie-empty-label");
+			emptyLabel.setAttribute("x", "100");
+			emptyLabel.setAttribute("y", "100");
+			emptyLabel.textContent = results.length === 0 ? "No data" : "All zero";
+			chart.append(emptyLabel);
+		} else {
+			let startAngle = -90;
+			for (const result of results) {
+				const value = result[metric.value];
+				if (value === 0) {
+					continue;
+				}
+
+				const endAngle = startAngle + (value / total) * 360;
+				const isFullCircle = positiveSliceCount === 1;
+				const percentage = ((value / total) * 100).toFixed(1);
+				const description = `${result.name}: ${value} time units, ${percentage}% of total ${metric.label.toLowerCase()}.`;
+				const slice = document.createElementNS("http://www.w3.org/2000/svg", "path");
+				slice.classList.add("results-pie-slice");
+				slice.setAttribute("d", createPieSlicePath(startAngle, endAngle, isFullCircle));
+				slice.setAttribute("fill", getProcessColor(result.order));
+				slice.setAttribute("tabindex", "0");
+				slice.setAttribute("aria-label", description);
+				slice.setAttribute("role", "graphics-symbol");
+
+				const title = document.createElementNS("http://www.w3.org/2000/svg", "title");
+				title.textContent = description;
+				slice.append(title);
+				slice.addEventListener("pointerenter", () => {
+					details.textContent = description;
+				});
+				slice.addEventListener("focus", () => {
+					details.textContent = description;
+				});
+				chart.append(slice);
+				startAngle = endAngle;
+			}
+		}
+
+		const details = document.createElement("p");
+		details.className = "results-pie-details";
+		details.setAttribute("role", "status");
+		details.textContent = results.length === 0
+			? "Add processes to see their time distribution."
+			: total === 0
+				? "There are no time units to distribute for this metric."
+				: "Hover over or focus a slice for its process and share.";
+		chart.addEventListener("pointerleave", () => {
+			if (total > 0) {
+				details.textContent = "Hover over or focus a slice for its process and share.";
+			}
+		});
+
+		const legend = document.createElement("ul");
+		legend.className = "results-pie-legend";
+		for (const result of results) {
+			const item = document.createElement("li");
+			const swatch = document.createElement("span");
+			swatch.className = "results-pie-swatch";
+			swatch.style.backgroundColor = getProcessColor(result.order);
+			swatch.setAttribute("aria-hidden", "true");
+
+			const name = document.createElement("span");
+			name.className = "results-pie-process";
+			name.textContent = result.name;
+
+			const value = document.createElement("span");
+			value.textContent = `${result[metric.value]} units`;
+			item.append(swatch, name, value);
+			legend.append(item);
+		}
+
+		figure.append(caption, chart, details, legend);
+		resultsPieGrid.append(figure);
+	}
 }
 
 function renderPolicyComparison(cycleTime) {
