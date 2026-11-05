@@ -481,7 +481,6 @@ h2 {
 	height: 100%;
 	min-width: 0;
 	border-radius: inherit;
-	background: linear-gradient(90deg, var(--blue), var(--mint));
 	transition: width 180ms ease;
 }
 
@@ -504,6 +503,105 @@ h2 {
 	color: var(--muted);
 	font-size: 0.75rem;
 	font-variant-numeric: tabular-nums;
+}
+
+.results-pie-charts {
+	margin-top: 1.25rem;
+}
+
+.results-pie-charts > h3 {
+	margin: 0 0 0.75rem;
+	font-size: 1rem;
+}
+
+.results-pie-grid {
+	display: grid;
+	grid-template-columns: repeat(auto-fit, minmax(min(100%, 13rem), 1fr));
+	gap: 0.75rem;
+}
+
+.results-pie {
+	min-width: 0;
+	margin: 0;
+	padding: 1rem;
+	border: 1px solid var(--line);
+	border-radius: 0.75rem;
+	background: rgb(255 255 255 / 55%);
+}
+
+.results-pie figcaption {
+	margin-bottom: 0.75rem;
+	font-size: 0.925rem;
+	font-weight: 700;
+	text-align: center;
+}
+
+.results-pie-chart {
+	display: block;
+	width: min(100%, 12rem);
+	margin-inline: auto;
+	overflow: visible;
+}
+
+.results-pie-slice {
+	stroke: white;
+	stroke-width: 1.5;
+	cursor: pointer;
+	transition: opacity 140ms ease;
+}
+
+.results-pie-slice:hover,
+.results-pie-slice:focus {
+	stroke: var(--ink);
+	stroke-width: 2.5;
+	outline: none;
+}
+
+.results-pie-empty {
+	fill: #e5ebf3;
+}
+
+.results-pie-empty-label {
+	fill: var(--muted);
+	font-size: 14px;
+	text-anchor: middle;
+	dominant-baseline: central;
+}
+
+.results-pie-details {
+	min-height: 2.7em;
+	margin: 0.5rem 0;
+	color: var(--muted);
+	font-size: 0.8rem;
+	line-height: 1.4;
+	text-align: center;
+}
+
+.results-pie-legend {
+	display: grid;
+	gap: 0.4rem;
+	margin: 0;
+	padding: 0;
+	list-style: none;
+	font-size: 0.8rem;
+	font-variant-numeric: tabular-nums;
+}
+
+.results-pie-legend li {
+	display: grid;
+	grid-template-columns: 0.75rem minmax(0, 1fr) auto;
+	align-items: center;
+	gap: 0.45rem;
+}
+
+.results-pie-swatch {
+	width: 0.7rem;
+	height: 0.7rem;
+	border-radius: 0.15rem;
+}
+
+.results-pie-process {
+	font-weight: 650;
 }
 
 .policy-options {
@@ -657,20 +755,8 @@ h2 {
 	outline-offset: 0;
 }
 
-.gantt-chart tbody td.process-color-0 {
-	background: #dce8f8;
-}
-
-.gantt-chart tbody td.process-color-1 {
-	background: #dcebe3;
-}
-
-.gantt-chart tbody td.process-color-2 {
-	background: #f1e2d9;
-}
-
-.gantt-chart tbody td.process-color-3 {
-	background: #f2e9cf;
+.gantt-chart tbody td.process-block {
+	background: color-mix(in srgb, var(--process-color) 20%, white);
 }
 
 .gantt-chart tbody td.idle-block {
