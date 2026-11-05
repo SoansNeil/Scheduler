@@ -248,6 +248,22 @@ h2 {
 	border-bottom: 0;
 }
 
+.delete-process-button {
+	padding: 0.4rem 0.65rem;
+	border: 1px solid #f0c4bd;
+	border-radius: 0.4rem;
+	color: #a63e2d;
+	background: #fff8f6;
+	font: inherit;
+	font-size: 0.85rem;
+	font-weight: 600;
+	cursor: pointer;
+}
+
+.delete-process-button:hover {
+	background: #ffe9e4;
+}
+
 .empty-processes td {
 	color: var(--muted);
 	text-align: center;
