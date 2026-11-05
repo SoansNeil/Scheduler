@@ -119,27 +119,26 @@
 				<p>Average turnaround time: <output id="average-turnaround">—</output></p>
 				<p>Average waiting time: <output id="average-waiting">—</output></p>
 			</div>
-			<details class="metric-explanations">
-				<summary>What do these times mean?</summary>
-				<dl>
-					<div>
-						<dt>Completion time</dt>
-						<dd>The time on the schedule when a process finishes.</dd>
+			<div class="results-chart">
+				<div class="results-chart-heading">
+					<h3 id="results-chart-heading">Compare process times</h3>
+					<div class="results-chart-control">
+						<label for="results-chart-metric">Show</label>
+						<select id="results-chart-metric" aria-controls="results-chart-list">
+							<option value="waitingTime">Waiting time</option>
+							<option value="turnaroundTime">Turnaround time</option>
+							<option value="responseTime">Response time</option>
+						</select>
 					</div>
-					<div>
-						<dt>Turnaround time</dt>
-						<dd>Total time from a process arriving until it finishes: completion time − arrival time.</dd>
-					</div>
-					<div>
-						<dt>Waiting time</dt>
-						<dd>Total time a process spends waiting for the CPU: turnaround time − burst time.</dd>
-					</div>
-					<div>
-						<dt>Response time</dt>
-						<dd>Time from arrival until a process first runs on the CPU.</dd>
-					</div>
-				</dl>
-			</details>
+				</div>
+				<ol id="results-chart-list" class="results-chart-list" aria-labelledby="results-chart-heading" aria-live="polite">
+					<li class="results-chart-empty">Add processes to compare their times.</li>
+				</ol>
+				<div id="results-chart-scale" class="results-chart-scale" aria-hidden="true">
+					<span>0</span>
+					<span>—</span>
+				</div>
+			</div>
 			<div class="policy-comparison">
 				<h3 id="policy-comparison-heading">Compare scheduling policies</h3>
 				<p id="policy-comparison-note" class="policy-comparison-note">
@@ -163,26 +162,27 @@
 					</table>
 				</div>
 			</div>
-			<div class="results-chart">
-				<div class="results-chart-heading">
-					<h3 id="results-chart-heading">Compare process times</h3>
-					<div class="results-chart-control">
-						<label for="results-chart-metric">Show</label>
-						<select id="results-chart-metric" aria-controls="results-chart-list">
-							<option value="waitingTime">Waiting time</option>
-							<option value="turnaroundTime">Turnaround time</option>
-							<option value="responseTime">Response time</option>
-						</select>
+			<details class="metric-explanations">
+				<summary>What do these times mean?</summary>
+				<dl>
+					<div>
+						<dt>Completion time</dt>
+						<dd>The time on the schedule when a process finishes.</dd>
 					</div>
-				</div>
-				<ol id="results-chart-list" class="results-chart-list" aria-labelledby="results-chart-heading" aria-live="polite">
-					<li class="results-chart-empty">Add processes to compare their times.</li>
-				</ol>
-				<div id="results-chart-scale" class="results-chart-scale" aria-hidden="true">
-					<span>0</span>
-					<span>—</span>
-				</div>
-			</div>
+					<div>
+						<dt>Turnaround time</dt>
+						<dd>Total time from a process arriving until it finishes: completion time − arrival time.</dd>
+					</div>
+					<div>
+						<dt>Waiting time</dt>
+						<dd>Total time a process spends waiting for the CPU: turnaround time − burst time.</dd>
+					</div>
+					<div>
+						<dt>Response time</dt>
+						<dd>Time from arrival until a process first runs on the CPU.</dd>
+					</div>
+				</dl>
+			</details>
 		</section>
 	</main>
 
