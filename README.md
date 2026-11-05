@@ -9,8 +9,9 @@ A visualization of how a CPU might schedule processes based on first-come first-
 - Visualize waiting time, turnaround time, and response time through a bar chart
 
 ## To use scheduler:
-- Download project
-- open in Visual Studio Code
-- Type in the following commands in terminal in this order:
+- Download project/copy https
+- Terminal:
+- git clone insert_project_link
+- cd scheduler
 - cd frontend
 - open scheduler.html

@@ -3,14 +3,14 @@
 	font-family: "Avenir Next", "Trebuchet MS", sans-serif;
 	font-synthesis: none;
 	text-rendering: optimizeLegibility;
-	--ink: #18243a;
-	--muted: #64718a;
-	--paper: #f6f8fc;
-	--line: #dce3ee;
-	--blue: #3867e8;
-	--mint: #17a98b;
-	--coral: #f36f58;
-	--gold: #e5a623;
+	--ink: #14263d;
+	--muted: #5c6e83;
+	--paper: #f5f5f1;
+	--line: #d5dfeb;
+	--blue: #2563c9;
+	--mint: #4f806f;
+	--coral: #bd7657;
+	--gold: #c49336;
 }
 
 * {
@@ -23,9 +23,9 @@ body {
 	padding: clamp(1.25rem, 5vw, 4.5rem) clamp(1rem, 5vw, 5rem);
 	color: var(--ink);
 	background:
-		radial-gradient(ellipse at 8% 2%, rgb(255 220 148 / 32%), transparent 26rem),
-		radial-gradient(ellipse at 92% 18%, rgb(116 217 202 / 25%), transparent 28rem),
-		linear-gradient(145deg, #fbfcff 0%, var(--paper) 58%, #f1f7f5 100%);
+		radial-gradient(ellipse at 8% 2%, rgb(196 147 54 / 10%), transparent 26rem),
+		radial-gradient(ellipse at 92% 18%, rgb(79 128 111 / 9%), transparent 28rem),
+		linear-gradient(145deg, #faf9f5 0%, var(--paper) 58%, #eef3ef 100%);
 }
 
 header,
@@ -48,7 +48,7 @@ header::before {
 	height: 0.35rem;
 	margin-bottom: 1.25rem;
 	border-radius: 1rem;
-	background: linear-gradient(90deg, var(--blue) 0 42%, var(--coral) 42% 72%, #e9b942 72%);
+	background: linear-gradient(90deg, var(--blue) 0 36%, var(--mint) 36% 66%, var(--coral) 66%);
 	content: "";
 }
 
@@ -239,7 +239,7 @@ h2 {
 
 .process-list th {
 	color: var(--muted);
-	background: #f1f5fb;
+	background: #eaf0f7;
 	font-size: 0.875rem;
 	font-weight: 600;
 }
@@ -250,10 +250,10 @@ h2 {
 
 .delete-process-button {
 	padding: 0.4rem 0.65rem;
-	border: 1px solid #f0c4bd;
+	border: 1px solid #e6c6c1;
 	border-radius: 0.4rem;
-	color: #a63e2d;
-	background: #fff8f6;
+	color: #8d4038;
+	background: #fbf5f4;
 	font: inherit;
 	font-size: 0.85rem;
 	font-weight: 600;
@@ -261,7 +261,7 @@ h2 {
 }
 
 .delete-process-button:hover {
-	background: #ffe9e4;
+	background: #f5e8e6;
 }
 
 .empty-processes td {
@@ -292,7 +292,7 @@ h2 {
 
 .results-table th {
 	color: var(--muted);
-	background: #f1f5fb;
+	background: #eaf0f7;
 	font-size: 0.8rem;
 	font-weight: 600;
 }
@@ -390,7 +390,7 @@ h2 {
 
 .policy-comparison-table thead th {
 	color: var(--muted);
-	background: #f1f5fb;
+	background: #eaf0f7;
 	font-size: 0.8rem;
 	font-weight: 600;
 }
@@ -473,7 +473,7 @@ h2 {
 	height: 1rem;
 	overflow: hidden;
 	border-radius: 999px;
-	background: #e9eef7;
+	background: #e5ebf3;
 }
 
 .results-chart-bar {
@@ -481,7 +481,7 @@ h2 {
 	height: 100%;
 	min-width: 0;
 	border-radius: inherit;
-	background: linear-gradient(90deg, var(--blue), #7190f2);
+	background: linear-gradient(90deg, var(--blue), var(--mint));
 	transition: width 180ms ease;
 }
 
@@ -613,7 +613,7 @@ h2 {
 
 .gantt-chart thead th {
 	color: var(--muted);
-	background: #f1f5fb;
+	background: #eaf0f7;
 	font-variant-numeric: tabular-nums;
 }
 
@@ -627,7 +627,7 @@ h2 {
 }
 
 .gantt-chart tbody td {
-	background: repeating-linear-gradient(135deg, #fff 0 8px, #f7f9fc 8px 16px);
+	background: repeating-linear-gradient(135deg, #fff 0 8px, #f3f6fa 8px 16px);
 }
 
 .gantt-chart tbody td.process-block {
@@ -658,24 +658,24 @@ h2 {
 }
 
 .gantt-chart tbody td.process-color-0 {
-	background: #dce7ff;
+	background: #dce8f8;
 }
 
 .gantt-chart tbody td.process-color-1 {
-	background: #d9f3ed;
+	background: #dcebe3;
 }
 
 .gantt-chart tbody td.process-color-2 {
-	background: #ffe4dc;
+	background: #f1e2d9;
 }
 
 .gantt-chart tbody td.process-color-3 {
-	background: #fff0c7;
+	background: #f2e9cf;
 }
 
 .gantt-chart tbody td.idle-block {
 	color: var(--muted);
-	background: repeating-linear-gradient(135deg, #fff 0 8px, #f7f9fc 8px 16px);
+	background: repeating-linear-gradient(135deg, #fff 0 8px, #f3f6fa 8px 16px);
 	font-style: italic;
 	text-align: center;
 }
