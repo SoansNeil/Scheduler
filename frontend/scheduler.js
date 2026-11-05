@@ -6,6 +6,11 @@ const processList = document.querySelector("#process-list");
 const resultsList = document.querySelector("#results-list");
 const averageTurnaroundOutput = document.querySelector("#average-turnaround");
 const averageWaitingOutput = document.querySelector("#average-waiting");
+const resultsChartMetric = document.querySelector("#results-chart-metric");
+const resultsChartList = document.querySelector("#results-chart-list");
+const resultsChartScale = document.querySelector("#results-chart-scale");
+const policyComparisonList = document.querySelector("#policy-comparison-list");
+const ganttSegmentDetails = document.querySelector("#gantt-segment-details");
 const clearScheduleButton = document.querySelector("#clear-schedule");
 const policyInputs = document.querySelectorAll('input[name="policy"]');
 const cycleTimeField = document.querySelector("#cycle-time-field");
@@ -17,6 +22,13 @@ const ganttColumns = ganttTable.querySelector("colgroup");
 const ganttHeader = ganttTable.tHead.rows[0];
 const ganttRow = ganttTable.tBodies[0].rows[0];
 const processes = [];
+let latestResults = [];
+const schedulingPolicies = [
+	{ value: "fcfs", label: "FCFS" },
+	{ value: "sjf", label: "SJF" },
+	{ value: "srtf", label: "SRTF" },
+	{ value: "round-robin", label: "Round Robin" },
+];
 
 function addProcessRow(process) {
 	const row = document.createElement("tr");
@@ -240,6 +252,7 @@ function calculateSchedule(policy, cycleTime) {
 }
 
 function renderGanttChart(schedule) {
+	ganttSegmentDetails.textContent = "Select a timeline block to see when it runs and for how long.";
 	const labelColumn = document.createElement("col");
 	labelColumn.className = "cpu-label-column";
 	ganttColumns.replaceChildren(labelColumn);
@@ -286,8 +299,20 @@ function renderGanttChart(schedule) {
 		if (!segment.idle) {
 			block.classList.add(`process-color-${segment.colorIndex}`);
 		}
-		block.textContent = segment.name;
-		block.setAttribute("aria-label", `${segment.name}, time ${segment.start} to ${segment.end}`);
+		const segmentButton = document.createElement("button");
+		segmentButton.type = "button";
+		segmentButton.className = "segment-button";
+		segmentButton.textContent = segment.name;
+		segmentButton.setAttribute(
+			"aria-label",
+			`${segment.name}, time ${segment.start} to ${segment.end}, ${duration} time units. Select for details.`
+		);
+		segmentButton.addEventListener("click", () => {
+			ganttSegmentDetails.textContent = segment.idle
+				? `CPU idle from time ${segment.start} to ${segment.end} (${duration} time units).`
+				: `${segment.name} ran from time ${segment.start} to ${segment.end} (${duration} time units).`;
+		});
+		block.append(segmentButton);
 		ganttRow.append(block);
 	}
 
@@ -295,6 +320,7 @@ function renderGanttChart(schedule) {
 }
 
 function renderResults(results) {
+	latestResults = results;
 	resultsList.replaceChildren();
 
 	if (results.length === 0) {
@@ -307,6 +333,7 @@ function renderResults(results) {
 		resultsList.append(emptyRow);
 		averageTurnaroundOutput.textContent = "—";
 		averageWaitingOutput.textContent = "—";
+		renderResultsChart(results);
 		return;
 	}
 
@@ -333,16 +360,106 @@ function renderResults(results) {
 
 	averageTurnaroundOutput.textContent = (totalTurnaroundTime / results.length).toFixed(2);
 	averageWaitingOutput.textContent = (totalWaitingTime / results.length).toFixed(2);
+	renderResultsChart(results);
+}
+
+function renderResultsChart(results) {
+	const metric = resultsChartMetric.value;
+	const maximum = Math.max(0, ...results.map((result) => result[metric]));
+	const metricLabel = resultsChartMetric.selectedOptions[0].textContent;
+	resultsChartList.replaceChildren();
+
+	if (results.length === 0) {
+		const emptyItem = document.createElement("li");
+		emptyItem.className = "results-chart-empty";
+		emptyItem.textContent = "Add processes to compare their times.";
+		resultsChartList.append(emptyItem);
+		resultsChartScale.lastElementChild.textContent = "—";
+		return;
+	}
+
+	for (const result of results) {
+		const item = document.createElement("li");
+		item.className = "results-chart-item";
+
+		const name = document.createElement("span");
+		name.className = "results-chart-process";
+		name.textContent = result.name;
+
+		const track = document.createElement("span");
+		track.className = "results-chart-track";
+		track.setAttribute("aria-hidden", "true");
+
+		const bar = document.createElement("span");
+		bar.className = "results-chart-bar";
+		bar.style.width = `${maximum === 0 ? 0 : (result[metric] / maximum) * 100}%`;
+		track.append(bar);
+
+		const value = document.createElement("span");
+		value.className = "results-chart-value";
+		value.textContent = result[metric];
+
+		item.setAttribute("aria-label", `${result.name}: ${result[metric]} ${metricLabel.toLowerCase()}`);
+		item.append(name, track, value);
+		resultsChartList.append(item);
+	}
+
+	resultsChartScale.lastElementChild.textContent = `${maximum} time units`;
+}
+
+function renderPolicyComparison(cycleTime) {
+	policyComparisonList.replaceChildren();
+
+	if (processes.length === 0) {
+		const row = document.createElement("tr");
+		row.className = "empty-processes";
+		const cell = document.createElement("td");
+		cell.colSpan = 4;
+		cell.textContent = "Add processes to compare policies.";
+		row.append(cell);
+		policyComparisonList.append(row);
+		return;
+	}
+
+	for (const policy of schedulingPolicies) {
+		const row = document.createElement("tr");
+		const nameCell = document.createElement("th");
+		nameCell.scope = "row";
+		nameCell.textContent = policy.label;
+		row.append(nameCell);
+
+		if (policy.value === "round-robin" && (!Number.isSafeInteger(cycleTime) || cycleTime < 1)) {
+			const unavailableCell = document.createElement("td");
+			unavailableCell.colSpan = 3;
+			unavailableCell.className = "comparison-unavailable";
+			unavailableCell.textContent = "Enter a positive whole-number time quantum.";
+			row.append(unavailableCell);
+			policyComparisonList.append(row);
+			continue;
+		}
+
+		const { results } = calculateSchedule(policy.value, cycleTime);
+		const averages = ["turnaroundTime", "waitingTime", "responseTime"].map((metric) =>
+			results.reduce((total, result) => total + result[metric], 0) / results.length
+		);
+		for (const average of averages) {
+			const cell = document.createElement("td");
+			cell.textContent = average.toFixed(2);
+			row.append(cell);
+		}
+		policyComparisonList.append(row);
+	}
 }
 
 function updateScheduleViews() {
 	const selectedPolicy = document.querySelector('input[name="policy"]:checked').value;
 	const needsCycleTime = selectedPolicy === "round-robin";
-	cycleTimeField.hidden = !needsCycleTime;
+	cycleTimeField.hidden = !needsCycleTime && processes.length === 0;
 	cycleTimeInput.required = needsCycleTime;
 	cycleTimeInput.setCustomValidity("");
 
 	const cycleTime = cycleTimeInput.valueAsNumber;
+	renderPolicyComparison(cycleTime);
 	if (needsCycleTime && (!Number.isSafeInteger(cycleTime) || cycleTime < 1)) {
 		scheduleStatus.textContent = "Enter a positive whole-number cycle time to calculate the Round Robin schedule.";
 		const emptySchedule = {
@@ -371,6 +488,7 @@ function updateScheduleViews() {
 for (const policyInput of policyInputs) {
 	policyInput.addEventListener("change", updateScheduleViews);
 }
+resultsChartMetric.addEventListener("change", () => renderResultsChart(latestResults));
 cycleTimeInput.addEventListener("input", updateScheduleViews);
 
 processForm.addEventListener("submit", (event) => {

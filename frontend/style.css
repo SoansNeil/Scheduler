@@ -303,6 +303,193 @@ h2 {
 	font-variant-numeric: tabular-nums;
 }
 
+.metric-explanations,
+.policy-comparison {
+	margin-top: 1.25rem;
+}
+
+.metric-explanations {
+	padding: 0.85rem 1rem;
+	border: 1px solid var(--line);
+	border-radius: 0.75rem;
+	background: rgb(255 255 255 / 55%);
+}
+
+.metric-explanations summary {
+	font-weight: 650;
+	cursor: pointer;
+}
+
+.metric-explanations dl {
+	display: grid;
+	gap: 0.8rem;
+	margin: 1rem 0 0;
+}
+
+.metric-explanations dt {
+	font-size: 0.9rem;
+	font-weight: 700;
+}
+
+.metric-explanations dd {
+	margin: 0.2rem 0 0;
+	color: var(--muted);
+	font-size: 0.875rem;
+	line-height: 1.5;
+}
+
+.policy-comparison h3 {
+	margin: 0 0 0.35rem;
+	font-size: 1rem;
+}
+
+.policy-comparison-note {
+	margin-bottom: 0.75rem;
+	color: var(--muted);
+	font-size: 0.875rem;
+	line-height: 1.5;
+}
+
+.policy-comparison-scroll {
+	overflow-x: auto;
+	border: 1px solid var(--line);
+	border-radius: 0.75rem;
+	background: rgb(255 255 255 / 75%);
+}
+
+.policy-comparison-table {
+	width: 100%;
+	border-collapse: collapse;
+	text-align: left;
+}
+
+.policy-comparison-table th,
+.policy-comparison-table td {
+	padding: 0.65rem 0.8rem;
+	border-bottom: 1px solid var(--line);
+	font-size: 0.875rem;
+	font-variant-numeric: tabular-nums;
+	white-space: nowrap;
+}
+
+.policy-comparison-table thead th {
+	color: var(--muted);
+	background: #f1f5fb;
+	font-size: 0.8rem;
+	font-weight: 600;
+}
+
+.policy-comparison-table tbody th {
+	font-weight: 650;
+}
+
+.policy-comparison-table tbody tr:last-child > * {
+	border-bottom: 0;
+}
+
+.comparison-unavailable {
+	color: var(--muted);
+}
+
+.results-chart {
+	margin-top: 1.25rem;
+	padding: 1rem;
+	border: 1px solid var(--line);
+	border-radius: 0.75rem;
+	background: rgb(255 255 255 / 55%);
+}
+
+.results-chart-heading {
+	display: flex;
+	flex-wrap: wrap;
+	align-items: center;
+	justify-content: space-between;
+	gap: 0.75rem;
+	margin-bottom: 1rem;
+}
+
+.results-chart-heading h3 {
+	margin: 0;
+	font-size: 1rem;
+}
+
+.results-chart-control {
+	display: flex;
+	align-items: center;
+	gap: 0.5rem;
+	color: var(--muted);
+	font-size: 0.875rem;
+	font-weight: 600;
+}
+
+.results-chart-control select {
+	max-width: 100%;
+	padding: 0.45rem 0.6rem;
+	border: 1px solid var(--line);
+	border-radius: 0.45rem;
+	color: var(--ink);
+	background: white;
+	font: inherit;
+}
+
+.results-chart-list {
+	display: grid;
+	gap: 0.65rem;
+	margin: 0;
+	padding: 0;
+	list-style: none;
+}
+
+.results-chart-item {
+	display: grid;
+	grid-template-columns: 2.5rem minmax(0, 1fr) 3rem;
+	align-items: center;
+	gap: 0.75rem;
+	font-size: 0.875rem;
+	font-variant-numeric: tabular-nums;
+}
+
+.results-chart-process {
+	font-weight: 700;
+}
+
+.results-chart-track {
+	height: 1rem;
+	overflow: hidden;
+	border-radius: 999px;
+	background: #e9eef7;
+}
+
+.results-chart-bar {
+	display: block;
+	height: 100%;
+	min-width: 0;
+	border-radius: inherit;
+	background: linear-gradient(90deg, var(--blue), #7190f2);
+	transition: width 180ms ease;
+}
+
+.results-chart-value {
+	color: var(--muted);
+	text-align: right;
+}
+
+.results-chart-empty {
+	padding: 0.5rem 0;
+	color: var(--muted);
+	font-size: 0.875rem;
+	text-align: center;
+}
+
+.results-chart-scale {
+	display: flex;
+	justify-content: space-between;
+	margin: 0.5rem 3.75rem 0 3.25rem;
+	color: var(--muted);
+	font-size: 0.75rem;
+	font-variant-numeric: tabular-nums;
+}
+
 .policy-options {
 	display: flex;
 	flex-wrap: wrap;
@@ -370,6 +557,13 @@ h2 {
 	display: none;
 }
 
+.gantt-segment-details {
+	min-height: 1.5em;
+	margin: 0.75rem 0 0;
+	color: var(--muted);
+	font-size: 0.875rem;
+}
+
 .gantt-scroll {
 	overflow-x: auto;
 	border: 1px solid var(--line);
@@ -427,6 +621,24 @@ h2 {
 	font-weight: 700;
 	text-align: center;
 	white-space: nowrap;
+}
+
+.gantt-chart .segment-button {
+	width: 100%;
+	min-height: 1.75rem;
+	padding: 0;
+	border: 0;
+	border-radius: 0.25rem;
+	color: inherit;
+	background: transparent;
+	font: inherit;
+	cursor: pointer;
+}
+
+.gantt-chart .segment-button:focus-visible {
+	position: relative;
+	z-index: 1;
+	outline-offset: 0;
 }
 
 .gantt-chart tbody td.process-color-0 {
